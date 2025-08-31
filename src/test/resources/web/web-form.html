@@ -3,91 +3,378 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<title>Web Form - Local Test Page</title>
+		<title>Selenium Web Form (Local)</title>
+
+		<!-- Tailwind Play CDN -->
+		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+		<!-- Fallback styles (applied even if CDN is blocked/offline) -->
 		<style>
-			body {
-				font-family: Arial, Helvetica, sans-serif;
-				padding: 24px;
+			:root {
+				--indigo-50: #eef2ff;
+				--indigo-600: #4f46e5;
+				--indigo-700: #4338ca;
+				--blue-600: #2563eb;
+				--slate-50: #f8fafc;
+				--slate-100: #f1f5f9;
+				--slate-200: #e2e8f0;
+				--slate-300: #cbd5e1;
+				--slate-600: #475569;
+				--slate-700: #334155;
+				--slate-800: #1f2937;
+				--emerald-600: #059669;
 			}
-			.field {
-				margin-bottom: 12px;
+			html,
+			body {
+				height: 100%;
+			}
+			body {
+				margin: 0;
+				font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+					Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial,
+					'Apple Color Emoji', 'Segoe UI Emoji';
+				color: var(--slate-800);
+				background: linear-gradient(
+					135deg,
+					var(--slate-50),
+					#fff,
+					var(--slate-100)
+				);
+			}
+			header {
+				position: sticky;
+				top: 0;
+				z-index: 10;
+				background: rgba(255, 255, 255, 0.8);
+				backdrop-filter: saturate(180%) blur(6px);
+				border-bottom: 1px solid var(--slate-200);
+			}
+			.container {
+				max-width: 56rem;
+				margin: 0 auto;
+			}
+			.px {
+				padding-left: 1.5rem;
+				padding-right: 1.5rem;
+			}
+			.py {
+				padding-top: 1rem;
+				padding-bottom: 1rem;
+			}
+			.title {
+				font-weight: 600;
+				letter-spacing: -0.01em;
+			}
+			main {
+				max-width: 56rem;
+				margin: 0 auto;
+				padding: 2.5rem 1.5rem;
+			}
+			.card {
+				border-radius: 1rem;
+				border: 1px solid var(--slate-200);
+				background: #fff;
+				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+			}
+			.card-body {
+				padding: 1.5rem;
+			}
+			@media (min-width: 768px) {
+				.card-body {
+					padding: 2rem;
+				}
 			}
 			label {
 				display: block;
-				margin-bottom: 4px;
 				font-weight: 600;
+				color: var(--slate-700);
+				font-size: 0.9rem;
+				margin-bottom: 0.25rem;
+			}
+			input[type='text'],
+			input[type='password'],
+			input[type='date'],
+			select,
+			textarea {
+				width: 100%;
+				border: 1px solid var(--slate-300);
+				background: #fff;
+				color: #0f172a;
+				border-radius: 0.65rem;
+				padding: 0.6rem 0.8rem;
+				box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+				outline: none;
+				transition: box-shadow 0.15s, border-color 0.15s;
+			}
+			input::placeholder,
+			textarea::placeholder {
+				color: #94a3b8;
+			}
+			input[type='text']:focus,
+			input[type='password']:focus,
+			input[type='date']:focus,
+			select:focus,
+			textarea:focus {
+				border-color: var(--indigo-600);
+				box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+			}
+			input[type='color'] {
+				height: 2.5rem;
+				width: 4rem;
+				border: 1px solid var(--slate-300);
+				border-radius: 0.5rem;
+				padding: 0.25rem;
+			}
+			.grid {
+				display: grid;
+				gap: 1rem;
+			}
+			.two-cols {
+				grid-template-columns: 1fr;
+			}
+			@media (min-width: 768px) {
+				.two-cols {
+					grid-template-columns: 1fr 1fr;
+				}
+			}
+			.btn {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				border: none;
+				border-radius: 0.75rem;
+				background: linear-gradient(90deg, var(--indigo-600), var(--blue-600));
+				color: #fff;
+				font-weight: 600;
+				padding: 0.7rem 1.25rem;
+				box-shadow: 0 6px 14px rgba(37, 99, 235, 0.18);
+				cursor: pointer;
+				transition: filter 0.2s, transform 0.02s;
+			}
+			.btn:hover {
+				filter: brightness(1.05);
+			}
+			.btn:active {
+				transform: translateY(1px);
+			}
+			.muted {
+				color: var(--slate-600);
+				font-size: 0.8rem;
 			}
 			#message {
-				margin-top: 16px;
-				color: #0a6;
+				margin-top: 0.25rem;
+				color: var(--emerald-600);
 				font-weight: 700;
+				font-size: 0.95rem;
 			}
 		</style>
 	</head>
-	<body>
-		<h1>Selenium Web Form (Local)</h1>
-		<form id="my-form">
-			<div class="field">
-				<label for="my-text">Text</label>
-				<input name="my-text" id="my-text" value="" />
-			</div>
 
-			<div class="field">
-				<label for="my-password">Password</label>
-				<input type="password" name="my-password" id="my-password" />
+	<body
+		class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 antialiased"
+	>
+		<!-- Top bar -->
+		<header
+			class="sticky top-0 z-10 bg-white/70 backdrop-blur border-b border-slate-200"
+		>
+			<div class="mx-auto max-w-3xl px-6 py-4 flex items-center justify-center">
+				<h1 class="text-xl md:text-2xl font-medium tracking-tight">
+					Selenium Web Form <span class="text-slate-400 font-bold">Local</span>
+				</h1>
 			</div>
+		</header>
 
-			<div class="field">
-				<label for="my-textarea">Textarea</label>
-				<textarea name="my-textarea" id="my-textarea"></textarea>
-			</div>
+		<!-- Main -->
+		<main class="mx-auto max-w-3xl px-6 py-10">
+			<!-- Card -->
+			<section
+				class="rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-black/5"
+			>
+				<div class="p-6 md:p-8">
+					<div class="mb-6">
+						<p class="text-sm text-slate-600">
+							This local page is used by automated tests to be deterministic and
+							fast. All fields keep the same names/ids expected by the tests.
+						</p>
+					</div>
 
-			<div class="field">
-				<label for="my-select">Select</label>
-				<select name="my-select" id="my-select">
-					<option value="1">One</option>
-					<option value="2">Two</option>
-				</select>
-			</div>
+					<form id="my-form" class="grid grid-cols-1 gap-6">
+						<!-- Text -->
+						<div>
+							<label
+								for="my-text"
+								class="block text-sm font-medium text-slate-700 mb-1"
+								>Text</label
+							>
+							<input
+								name="my-text"
+								id="my-text"
+								placeholder="Type something..."
+								class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+							/>
+						</div>
 
-			<div class="field">
-				<label>Checkbox</label>
-				<input type="checkbox" name="my-check" id="my-check" />
-			</div>
+						<!-- Password -->
+						<div>
+							<label
+								for="my-password"
+								class="block text-sm font-medium text-slate-700 mb-1"
+								>Password</label
+							>
+							<input
+								type="password"
+								name="my-password"
+								id="my-password"
+								placeholder="••••••••"
+								class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+							/>
+						</div>
 
-			<div class="field">
-				<label>Radio</label>
-				<input type="radio" id="my-radio-1" name="my-radio" value="1" />
-				<label for="my-radio-1">Radio 1</label>
-				<input type="radio" id="my-radio-2" name="my-radio" value="2" />
-				<label for="my-radio-2">Radio 2</label>
-			</div>
+						<!-- Textarea -->
+						<div>
+							<label
+								for="my-textarea"
+								class="block text-sm font-medium text-slate-700 mb-1"
+								>Textarea</label
+							>
+							<textarea
+								name="my-textarea"
+								id="my-textarea"
+								placeholder="Notes..."
+								class="block w-full h-28 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-vertical"
+							></textarea>
+						</div>
 
-			<div class="field">
-				<label for="my-colors">Color</label>
-				<input type="color" name="my-colors" id="my-colors" value="#00ff00" />
-			</div>
+						<!-- Select + Checkbox -->
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div>
+								<label
+									for="my-select"
+									class="block text-sm font-medium text-slate-700 mb-1"
+									>Select</label
+								>
+								<select
+									name="my-select"
+									id="my-select"
+									class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+								>
+									<option value="1">One</option>
+									<option value="2">Two</option>
+								</select>
+							</div>
 
-			<div class="field">
-				<label for="my-date">Date</label>
-				<input type="date" name="my-date" id="my-date" />
-			</div>
+							<div>
+								<span class="block text-sm font-medium text-slate-700 mb-1"
+									>Checkbox</span
+								>
+								<label class="inline-flex items-center gap-2">
+									<input
+										type="checkbox"
+										name="my-check"
+										id="my-check"
+										class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+									/>
+									<span class="text-sm text-slate-700">Enable option</span>
+								</label>
+								<p class="mt-1 text-xs text-slate-500">
+									Toggles a boolean state.
+								</p>
+							</div>
+						</div>
 
-			<div class="field">
-				<button type="submit">Submit</button>
-			</div>
-		</form>
+						<!-- Radio -->
+						<div>
+							<span class="block text-sm font-medium text-slate-700 mb-1"
+								>Radio</span
+							>
+							<div class="space-y-2">
+								<label class="flex items-center gap-2">
+									<input
+										type="radio"
+										id="my-radio-1"
+										name="my-radio"
+										value="1"
+										class="h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-500"
+									/>
+									<span class="text-sm">Radio 1</span>
+								</label>
+								<label class="flex items-center gap-2">
+									<input
+										type="radio"
+										id="my-radio-2"
+										name="my-radio"
+										value="2"
+										class="h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-500"
+									/>
+									<span class="text-sm">Radio 2</span>
+								</label>
+							</div>
+						</div>
 
-		<div id="message" aria-live="polite"></div>
+						<!-- Color + Date -->
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div>
+								<label
+									for="my-colors"
+									class="block text-sm font-medium text-slate-700 mb-1"
+									>Color</label
+								>
+								<input
+									type="color"
+									name="my-colors"
+									id="my-colors"
+									value="#00ff00"
+									class="h-10 w-16 rounded-md border border-slate-300"
+								/>
+							</div>
+
+							<div>
+								<label
+									for="my-date"
+									class="block text-sm font-medium text-slate-700 mb-1"
+									>Date</label
+								>
+								<input
+									type="date"
+									name="my-date"
+									id="my-date"
+									placeholder="yyyy-mm-dd"
+									class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+								/>
+								<p class="mt-1 text-xs text-slate-500">Format: YYYY-MM-DD</p>
+							</div>
+						</div>
+
+						<!-- Actions -->
+						<div class="pt-2">
+							<button
+								type="submit"
+								class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 px-5 py-2.5 text-white font-medium shadow-md hover:from-indigo-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition"
+							>
+								Submit
+							</button>
+						</div>
+
+						<!-- Message -->
+						<div
+							id="message"
+							class="mt-1 text-sm font-semibold text-emerald-600"
+							aria-live="polite"
+						></div>
+					</form>
+				</div>
+			</section>
+		</main>
 
 		<script>
 			document
 				.getElementById('my-form')
 				.addEventListener('submit', function (e) {
 					e.preventDefault();
-					var select = document.querySelector('[name="my-select"]');
-					var msg = 'Submitted — selected: ' + (select ? select.value : 'none');
-					document.getElementById('message').textContent = msg;
+					const select = document.querySelector('[name="my-select"]');
+					const value = select ? select.value : 'none';
+					document.getElementById('message').textContent =
+						'Submitted — selected: ' + value;
 				});
 		</script>
 	</body>
