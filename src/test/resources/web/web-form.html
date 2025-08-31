@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Web Form - Local Test Page</title>
+		<style>
+			body {
+				font-family: Arial, Helvetica, sans-serif;
+				padding: 24px;
+			}
+			.field {
+				margin-bottom: 12px;
+			}
+			label {
+				display: block;
+				margin-bottom: 4px;
+				font-weight: 600;
+			}
+			#message {
+				margin-top: 16px;
+				color: #0a6;
+				font-weight: 700;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Selenium Web Form (Local)</h1>
+		<form id="my-form">
+			<div class="field">
+				<label for="my-text">Text</label>
+				<input name="my-text" id="my-text" value="" />
+			</div>
+
+			<div class="field">
+				<label for="my-password">Password</label>
+				<input type="password" name="my-password" id="my-password" />
+			</div>
+
+			<div class="field">
+				<label for="my-textarea">Textarea</label>
+				<textarea name="my-textarea" id="my-textarea"></textarea>
+			</div>
+
+			<div class="field">
+				<label for="my-select">Select</label>
+				<select name="my-select" id="my-select">
+					<option value="1">One</option>
+					<option value="2">Two</option>
+				</select>
+			</div>
+
+			<div class="field">
+				<label>Checkbox</label>
+				<input type="checkbox" name="my-check" id="my-check" />
+			</div>
+
+			<div class="field">
+				<label>Radio</label>
+				<input type="radio" id="my-radio-1" name="my-radio" value="1" />
+				<label for="my-radio-1">Radio 1</label>
+				<input type="radio" id="my-radio-2" name="my-radio" value="2" />
+				<label for="my-radio-2">Radio 2</label>
+			</div>
+
+			<div class="field">
+				<label for="my-colors">Color</label>
+				<input type="color" name="my-colors" id="my-colors" value="#00ff00" />
+			</div>
+
+			<div class="field">
+				<label for="my-date">Date</label>
+				<input type="date" name="my-date" id="my-date" />
+			</div>
+
+			<div class="field">
+				<button type="submit">Submit</button>
+			</div>
+		</form>
+
+		<div id="message" aria-live="polite"></div>
+
+		<script>
+			document
+				.getElementById('my-form')
+				.addEventListener('submit', function (e) {
+					e.preventDefault();
+					var select = document.querySelector('[name="my-select"]');
+					var msg = 'Submitted — selected: ' + (select ? select.value : 'none');
+					document.getElementById('message').textContent = msg;
+				});
+		</script>
+	</body>
+</html>
